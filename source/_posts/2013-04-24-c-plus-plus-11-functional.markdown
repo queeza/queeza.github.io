@@ -206,4 +206,34 @@ f5(100);
 f6(100);
 std::cout<< f7(foo) << std::endl;
 {% endcodeblock %}
+_Reference:_ [std::bind](http://en.cppreference.com/w/cpp/utility/functional/bind)
 
+###std::ref/cref  
+  Function templates ref and cref are helper functions that generate an object of type std::reference_wrapper, using template argument deduction to 
+determine the template argument of the result.
+
+_example:_
+{% codeblock lang:objc %}
+void fun(int& n1, int& n2, const int& n3) {
+  std::cout<< "In function" << n1 << " " << n2 << " " << n3 <<std::endl;
+  ++n1;
+  ++n2;
+}
+
+int main {
+int n1 =1, n2 = 2, n3 =3;
+std::function<void()> f1 = std::bind(fun, n1, std::ref(n2), std::cref(n3));
+
+std::cout<<"Before: "<<n1 <<" "<<n2<< " "<< n3 <<std::endl;
+f1();
+std::cout<<"After: "<<n1 <<" "<<n2<< " "<< n3 <<std::endl;
+}
+{% endcodeblock %}
+
+_output:_
+{% codeblock lang:objc %}
+Before: 1 2 3
+In function1 2 3
+After: 1 3 3
+{% endcodeblock %}
+_Reference:_ [std::ref/cref](http://en.cppreference.com/w/cpp/utility/functional/ref)
