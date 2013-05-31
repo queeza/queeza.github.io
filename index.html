@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>My Octopress Blog</title>
-  <meta name="author" content="Your Name">
+  <title>Queeza Blog</title>
+  <meta name="author" content="Queeza">
 
   
-  <meta name="description" content=" Blog Archives Recent Posts ">
+  <meta name="description" content="c++11 functional std::function function is a template. As with other templates we&#8217;ve used, we must specify return type and argument types when &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +21,7 @@
   <link rel="canonical" href="http://queeza.github.io">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="My Octopress Blog" type="application/atom+xml">
+  <link href="/atom.xml" rel="alternate" title="Queeza Blog" type="application/atom+xml">
   <script src="/javascripts/modernizr-2.0.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
@@ -36,9 +36,9 @@
 
 <body   >
   <header role="banner"><hgroup>
-  <h1><a href="/">My Octopress Blog</a></h1>
+  <h1><a href="/">Queeza Blog</a></h1>
   
-    <h2>A blogging framework for hackers.</h2>
+    <h2>You Dream, We Code.</h2>
   
 </hgroup>
 
@@ -66,6 +66,453 @@
       <div class="blog-index">
   
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/24/c-plus-plus-11-functional/">C++11 Functional</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-24T17:15:00+08:00" pubdate data-updated="true">Apr 24<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>c++11 functional</h2>
+
+<h3>std::function</h3>
+
+<p>  <em>function</em> is a template. As with other templates we&#8217;ve used, we must specify return type and argument types  when we create a <em>function</em> type.
+e.g. function&lt;int(int, int)></p>
+
+<ul>
+<li><strong>C++98 Function pointers and member function pointers</strong>
+
+<ol>
+<li>Exact parameter/return types and ex. specs. must be specified.</li>
+<li>Can’t point to nonstatic member functions.</li>
+<li>Can’t point to function objects.</li>
+</ol>
+</li>
+<li><strong>boost::function </strong>
+
+<ol>
+<li>Using for function, member functions and function objects.</li>
+<li>Useful for callback function.</li>
+</ol>
+</li>
+<li><strong>C++11 std::function</strong>
+
+<ol>
+<li>Using for callable entities that can be called like a function.
+
+<ul>
+<li><em>Functions, function points, function references.</em></li>
+<li><em>Object  implicitly convertible to one of those.</em></li>
+<li><em>Function object.</em></li>
+</ul>
+</li>
+<li>Useful to be able to refer to any callable entity compatible with a given calling interface.</li>
+</ol>
+</li>
+</ul>
+
+
+<p><em>example:</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="cp">#include &lt;functional&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">i</span> <span class="o">+</span><span class="n">j</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">addPoint</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="n">add</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">auto</span> <span class="n">mod</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="n">i</span> <span class="o">%</span> <span class="n">j</span><span class="p">;};</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">class</span> <span class="n">Div</span> <span class="p">{</span>
+</span><span class='line'><span class="nl">public:</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">operator</span> <span class="p">()</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">i</span> <span class="o">/</span> <span class="n">j</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">class</span> <span class="n">Operation</span><span class="p">{</span>
+</span><span class='line'><span class="nl">public:</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">minus</span><span class="p">(</span><span class="kt">int</span> <span class="n">num1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">num2</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">num1</span> <span class="o">-</span> <span class="n">num2</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>   <span class="c1">//int information = 99;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">add</span><span class="p">;</span>                          <span class="c1">//user-defined function</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">addPoint</span><span class="p">;</span>                     <span class="c1">//function pointer</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f3</span> <span class="o">=</span> <span class="n">Div</span><span class="p">();</span>                         <span class="c1">//user-defined class object with overloadding the fuction-call operator.</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f4</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">minus</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">();</span>             <span class="c1">//library function object</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f5</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span><span class="k">return</span> <span class="n">i</span><span class="o">*</span><span class="n">j</span><span class="p">;};</span> <span class="c1">//unamed lambda</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f6</span> <span class="o">=</span> <span class="n">mod</span><span class="p">;</span>                           <span class="c1">//named lambda object</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Operation</span> <span class="n">operation</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f7</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Operation</span><span class="o">::</span><span class="n">minus</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">operation</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span>
+</span><span class='line'>                                            <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">);</span><span class="c1">//a call of std::bind</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="n">Operation</span><span class="o">&amp;</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f8</span> <span class="o">=</span>  <span class="o">&amp;</span><span class="n">Operation</span><span class="o">::</span><span class="n">minus</span><span class="p">;</span>  <span class="c1">//member function</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">(</span><span class="n">Operation</span><span class="o">*</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">f9</span> <span class="o">=</span>  <span class="o">&amp;</span><span class="n">Operation</span><span class="o">::</span><span class="n">minus</span><span class="p">;</span>  <span class="c1">//member function</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f1</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f2</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f3</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f4</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f5</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f6</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f7</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f8</span><span class="p">(</span><span class="n">operation</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="o">&lt;&lt;</span><span class="n">f9</span><span class="p">(</span><span class="o">&amp;</span><span class="n">operation</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>  std::bad_function_call is the type of the exception thrown by std::function::operator() if the function wrapper has no target.</p>
+
+<p><em>example:</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">nullptr</span><span class="p">;</span>
+</span><span class='line'><span class="n">try</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">f</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span> <span class="n">catch</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">bad_function_call</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">e</span><span class="p">.</span><span class="n">what</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/function">std::functionn</a></p>
+
+<h3>std::mem_fn</h3>
+
+<p>   To use <em>function</em>, we must supply the call signature of the member we want to call. We can, instead, let the compiler deduce the member&#8217;s type
+by using another library facility,<em>mem_fn</em>, whick like <em>function</em>, is defined in the <em>functional header</em>.Like <em>function</em>, <em>mem_fn</em> generates a callable
+object from a pointer to member. Unlike <em>function</em>, <em>mem_fn</em> will deduce the type of callable from the type of the pointer to member.</p>
+
+<ul>
+<li><strong>C++98 std::mem_fun/mem_fun_ref</strong>
+
+<ol>
+<li>Only can deal with member functions with one or no argument.</li>
+<li>You should pick between both depending on which you want to deal with pointer or reference for class object.</li>
+<li>Do not support smart pointer.</li>
+</ol>
+</li>
+<li><strong>boost::mem_fn </strong><br/>
+<em>boost::mem_fn</em> is ageneralization of the <em>std::mem_fun/mem_fun_ref</em>. It support member function pointers with more than one argument, and support
+smart poiter.</li>
+<li><strong>C++11 std::mem_fn </strong>  <br/>
+Similar with <em>boost::mem_fn</em>. The name is quite confusing!(mem_fun Vs mem_fn)</li>
+</ul>
+
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">Foo</span> <span class="n">foo</span><span class="p">;</span>
+</span><span class='line'><span class="n">foo</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// member function without parameter</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayGreeting</span><span class="p">);</span>
+</span><span class='line'><span class="n">f1</span><span class="p">(</span><span class="n">foo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// member function with parameter</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayNumber</span><span class="p">);</span>
+</span><span class='line'><span class="n">f2</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="mi">55</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// member varibale</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">data</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">data</span><span class="p">);</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;data: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">data</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// member function that return int</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f3</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">dataValue</span><span class="p">);</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f4</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">mem_fn</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">()</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">dataValue</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;data: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">f3</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;data: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">f4</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/mem_fn">std::mem_fn</a></p>
+
+<h3>std::bind</h3>
+
+<p>   The bind can be thought of as a general-purpose function adaptor. It takes a callable object and generates a new callable that &#8220;adapts&#8221; the
+parameter list of the original object. The general form of a call to bind is:</p>
+
+<pre><code>auto _newCallable_ = bind(_Callable_, _arg_list_);
+</code></pre>
+
+<ul>
+<li><strong>C++98 std::bind1st/std::bind2nd</strong><br/>
+ bind1st(op, value) <em>op(value, param)</em> and bind2nd(op, value) <em>op(param, value)</em>. <em>op</em> is a binary functor, and <em>bind1st/bind2nd</em> actually make the
+binary functor to unary functor. <em>bind1st</em> bind the fist parameter and <em>bind2nd</em> bind the sencond one. Not flexible!
+
+<ol>
+<li>Bind only first or second arguments.</li>
+<li>Bind only one argument at a time.</li>
+<li>Can&#8217;t bind functions with reference parameters.</li>
+<li>Require adaptable function objects. i.e.<em>ptr_fun</em>, <em>mem_fun</em>, and mem_fun_ref_.</li>
+</ol>
+</li>
+<li><strong>boost::bind</strong><br/>
+ <em>boost:::bind</em> is generalization of the c++98 <em>std::bin1st/std::bind2nd</em>. It supports arbitrary function objects, function, function pointer, and
+member function pointers, and is able to bind any argument to a specific value or route input arguments into arbitrary positions. <em>bind</em> does not place
+any requirements on the function object; in particular. Mostly it can <a href="http://www.boost.org/doc/libs/1_49_0/boost/bind/placeholders.hpp">bind 9 parameters</a>.</li>
+<li><strong>c+=11 std::bind</strong><br/>
+  Similar with the <em>boost::bind</em>.
+
+<ol>
+<li><em>functionObject</em> std::bind(_callableEntity, 1stArgBinding, 2ndArgBinding&#8230; nthArgBinding);  <a href="http://en.cppreference.com/w/cpp/utility/functional/placeholders">There&#8217;s no limit for binding parameters&#8217; number</a>.</li>
+<li>_1 is in namespace std::placeholders.</li>
+</ol>
+</li>
+</ul>
+
+
+<p><em>example:</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">lily</span> <span class="o">=</span> <span class="s">&quot;Lily&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// like the lily and 160.6 is pass by value</span>
+</span><span class='line'><span class="c1">// like std::placeholders::_1 pass by reference</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">)(</span><span class="n">lily</span><span class="p">,</span> <span class="mf">160.6</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">auto</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">);</span>
+</span><span class='line'><span class="n">f1</span><span class="p">(</span><span class="n">lily</span><span class="p">,</span> <span class="mf">160.6</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// nested bind</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f2</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">)(</span><span class="mf">160.6</span><span class="p">);</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">lily</span><span class="p">,</span>  <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span> <span class="n">f2</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">)(</span><span class="mi">18</span><span class="p">,</span> <span class="mf">160.6</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// nested bind subexpressions share the placeholders</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">lily</span><span class="p">,</span>  <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_2</span><span class="p">))(</span><span class="mi">18</span><span class="p">,</span> <span class="mf">160.6</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//bind to a member function object</span>
+</span><span class='line'><span class="n">Foo</span> <span class="n">foo</span><span class="p">;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f3</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayNumber</span><span class="p">,</span> <span class="n">foo</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// bind pointer</span>
+</span><span class='line'><span class="n">Foo</span><span class="o">*</span> <span class="n">pfoo</span><span class="p">;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f4</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayNumber</span><span class="p">,</span> <span class="n">pfoo</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// bind smart pointer</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">spfoo</span><span class="p">;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f5</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayNumber</span><span class="p">,</span> <span class="n">spfoo</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// bind uniqu pointer.(std::unique_ptr must be wrapped by std::ref when bound,</span>
+</span><span class='line'><span class="c1">//                    because std::unique_ptr isn’t copyable.)</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">Foo</span><span class="o">&gt;</span> <span class="n">upfoo</span><span class="p">;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f6</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">displayNumber</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">upfoo</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// bind member varibale</span>
+</span><span class='line'><span class="n">foo</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">77</span><span class="p">;</span>
+</span><span class='line'><span class="k">auto</span> <span class="n">f7</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Foo</span><span class="o">::</span><span class="n">data</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">placeholders</span><span class="o">::</span><span class="n">_1</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">f3</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="n">f4</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="n">f5</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="n">f6</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span> <span class="n">f7</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/bind">std::bind</a></p>
+
+<h3>std::ref/cref</h3>
+
+<p>  Function templates ref and cref are helper functions that generate an object of type std::reference_wrapper, using template argument deduction to
+determine the template argument of the result.</p>
+
+<p><em>example:</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="nf">fun</span><span class="p">(</span><span class="kt">int</span><span class="o">&amp;</span> <span class="n">n1</span><span class="p">,</span> <span class="kt">int</span><span class="o">&amp;</span> <span class="n">n2</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span><span class="o">&amp;</span> <span class="n">n3</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span> <span class="s">&quot;In function&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">n1</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">n2</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">n3</span> <span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">++</span><span class="n">n1</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">++</span><span class="n">n2</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="n">main</span> <span class="p">{</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">n1</span> <span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n3</span> <span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">f1</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">bind</span><span class="p">(</span><span class="n">fun</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">ref</span><span class="p">(</span><span class="n">n2</span><span class="p">),</span> <span class="n">std</span><span class="o">::</span><span class="n">cref</span><span class="p">(</span><span class="n">n3</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;Before: &quot;</span><span class="o">&lt;&lt;</span><span class="n">n1</span> <span class="o">&lt;&lt;</span><span class="s">&quot; &quot;</span><span class="o">&lt;&lt;</span><span class="n">n2</span><span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="o">&lt;&lt;</span> <span class="n">n3</span> <span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="n">f1</span><span class="p">();</span>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="s">&quot;After: &quot;</span><span class="o">&lt;&lt;</span><span class="n">n1</span> <span class="o">&lt;&lt;</span><span class="s">&quot; &quot;</span><span class="o">&lt;&lt;</span><span class="n">n2</span><span class="o">&lt;&lt;</span> <span class="s">&quot; &quot;</span><span class="o">&lt;&lt;</span> <span class="n">n3</span> <span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>output:</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="nl">Before:</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span>
+</span><span class='line'><span class="n">In</span> <span class="n">function1</span> <span class="mi">2</span> <span class="mi">3</span>
+</span><span class='line'><span class="nl">After:</span> <span class="mi">1</span> <span class="mi">3</span> <span class="mi">3</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><em>Reference:</em> <a href="http://en.cppreference.com/w/cpp/utility/functional/ref">std::ref/cref</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -77,6 +524,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/24/c-plus-plus-11-functional/">c++11 functional</a>
+      </li>
     
   </ul>
 </section>
@@ -91,7 +542,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Your Name -
+  Copyright &copy; 2013 - Queeza -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
