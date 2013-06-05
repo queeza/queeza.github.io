@@ -13,7 +13,7 @@ categories: C++11
 e.g. function<int(int, int)>
 
 * __C++98 Function pointers and member function pointers__
-  1. Exact parameter/return types and ex. specs. must be specified.  
+  1. Exact parameter/return types  must be specified.  
   2. Can’t point to nonstatic member functions.  
   3. Can’t point to function objects.  
 * __boost::function __
@@ -112,28 +112,43 @@ smart poiter.
  Similar with _boost::mem_fn_. The name is quite confusing!(mem_fun Vs mem_fn) 
 
 {% codeblock lang:objc %}
-Foo foo;
-foo.data = 100;
+struct Foo {
+    void displayGreeting() {
+        std::cout << "Hello, world.\n";
+    }
+    void displayNumber(int i) {
+        std::cout << "number: " << i << '\n';
+    }
 
-// member function without parameter
-auto f1 = std::mem_fn(&Foo::displayGreeting);
-f1(foo);
+    int dataValue() {
+      return data;
+    }
 
-// member function with parameter
-auto f2 = std::mem_fn(&Foo::displayNumber);
-f2(foo, 55);
+    int data;
+};
+int main {
+  Foo foo;
+  foo.data = 100;
 
-// member varibale
-auto data = std::mem_fn(&Foo::data);
-std::cout << "data: " << data(foo) << '\n';
+  // member function without parameter
+  auto f1 = std::mem_fn(&Foo::displayGreeting);
+  f1(foo);
 
-// member function that return int
-auto f3 = std::mem_fn(&Foo::dataValue);
-auto f4 = std::mem_fn<int()>(&Foo::dataValue);
+  // member function with parameter
+  auto f2 = std::mem_fn(&Foo::displayNumber);
+  f2(foo, 55);
 
-std::cout << "data: " << f3(foo) << '\n';
-std::cout << "data: " << f4(foo) << '\n';
+  // member varibale
+  auto data = std::mem_fn(&Foo::data);
+  std::cout << "data: " << data(foo) << '\n';
 
+  // member function that return int
+  auto f3 = std::mem_fn(&Foo::dataValue);
+  auto f4 = std::mem_fn<int()>(&Foo::dataValue);
+
+  std::cout << "data: " << f3(foo) << '\n';
+  std::cout << "data: " << f4(foo) << '\n';
+}
 {% endcodeblock %}
 
 _Reference:_ [std::mem_fn](http://en.cppreference.com/w/cpp/utility/functional/mem_fn)
@@ -155,56 +170,85 @@ binary functor to unary functor. _bind1st_ bind the fist parameter and _bind2nd_
    _boost:::bind_ is generalization of the c++98 _std::bin1st/std::bind2nd_. It supports arbitrary function objects, function, function pointer, and 
 member function pointers, and is able to bind any argument to a specific value or route input arguments into arbitrary positions. _bind_ does not place
 any requirements on the function object; in particular. Mostly it can [bind 9 parameters](http://www.boost.org/doc/libs/1_49_0/boost/bind/placeholders.hpp).
-* __c+=11 std::bind__  
+* __c++11 std::bind__  
     Similar with the _boost::bind_.   
     1. _functionObject_ std::bind(_callableEntity, 1stArgBinding, 2ndArgBinding... nthArgBinding);  [There's no limit for binding parameters' number](http://en.cppreference.com/w/cpp/utility/functional/placeholders).
     2. _1 is in namespace std::placeholders.
 
 _example:_
 {% codeblock lang:objc %}
+int info(std::string& name, int age, double high, double weight) {
+  std::cout<<"--------Info-----------"<<std::endl;
+  std::cout<<"name: "<<name<<std::endl;
+  std::cout<<"age: "<<age<<std::endl;
+  std::cout<<"high: "<<high<<std::endl;
+  std::cout<<"weight: "<<weight<<std::endl;
+  return age;
+}
 
-std::string lily = "Lily";
+double high(double high) {
+  return high;
+}
 
-// like the lily and 160.6 is pass by value
-// like std::placeholders::_1 pass by reference
-std::bind<int>(info, std::placeholders::_1, 18, std::placeholders::_2, std::placeholders::_2)(lily, 160.6);
+struct Foo {
+    void displayGreeting() {
+        std::cout << "Hello, world.\n";
+    }
+    void displayNumber(int i) {
+        std::cout << "number: " << i << '\n';
+    }
 
-auto f1 = std::bind(info, std::placeholders::_1, 18, std::placeholders::_2, std::placeholders::_2);
-f1(lily, 160.6);
+    int dataValue() {
+      return data;
+    }
 
-// nested bind
-auto f2 = std::bind(high, std::placeholders::_1)(160.6);
-std::bind(info, lily,  std::placeholders::_1, f2, std::placeholders::_2)(18, 160.6);
+    int data;
+};
 
-// nested bind subexpressions share the placeholders
-std::bind(info, lily,  std::placeholders::_1, std::placeholders::_2, std::bind(high, std::placeholders::_2))(18, 160.6);
+int main {
+  std::string lily = "Lily";
 
-//bind to a member function object
-Foo foo;
-auto f3 = std::bind(&Foo::displayNumber, foo, std::placeholders::_1);
+  // like the lily and 160.6 is pass by value
+  // like std::placeholders::_1 pass by reference
+  std::bind<int>(info, std::placeholders::_1, 18, std::placeholders::_2, std::placeholders::_2)(lily, 160.6);
 
-// bind pointer
-Foo* pfoo;
-auto f4 = std::bind(&Foo::displayNumber, pfoo, std::placeholders::_1);
+  auto f1 = std::bind(info, std::placeholders::_1, 18, std::placeholders::_2, std::placeholders::_2);
+  f1(lily, 160.6);
 
-// bind smart pointer
-std::shared_ptr<Foo> spfoo;
-auto f5 = std::bind(&Foo::displayNumber, spfoo, std::placeholders::_1);
+  // nested bind
+  auto f2 = std::bind(high, std::placeholders::_1)(160.6);
+  std::bind(info, lily,  std::placeholders::_1, f2, std::placeholders::_2)(18, 160.6);
 
-// bind uniqu pointer.(std::unique_ptr must be wrapped by std::ref when bound,
-//                    because std::unique_ptr isn’t copyable.)
-std::unique_ptr<Foo> upfoo;
-auto f6 = std::bind(&Foo::displayNumber, std::ref(upfoo), std::placeholders::_1);
+  // nested bind subexpressions share the placeholders
+  std::bind(info, lily,  std::placeholders::_1, std::placeholders::_2, std::bind(high, std::placeholders::_2))(18, 160.6);
 
-// bind member varibale
-foo.data = 77;
-auto f7 = std::bind(&Foo::data, std::placeholders::_1);
+  //bind to a member function object
+  Foo foo;
+  auto f3 = std::bind(&Foo::displayNumber, foo, std::placeholders::_1);
 
-f3(100);
-f4(100);
-f5(100);
-f6(100);
-std::cout<< f7(foo) << std::endl;
+  // bind pointer
+  Foo* pfoo;
+  auto f4 = std::bind(&Foo::displayNumber, pfoo, std::placeholders::_1);
+
+  // bind smart pointer
+  std::shared_ptr<Foo> spfoo;
+  auto f5 = std::bind(&Foo::displayNumber, spfoo, std::placeholders::_1);
+
+  // bind uniqu pointer.(std::unique_ptr must be wrapped by std::ref when bound,
+  //                    because std::unique_ptr isn’t copyable.)
+  std::unique_ptr<Foo> upfoo;
+  auto f6 = std::bind(&Foo::displayNumber, std::ref(upfoo), std::placeholders::_1);
+
+  // bind member varibale
+  foo.data = 77;
+  auto f7 = std::bind(&Foo::data, std::placeholders::_1);
+
+  f3(100);
+  f4(100);
+  f5(100);
+  f6(100);
+  std::cout<< f7(foo) << std::endl;
+}
 {% endcodeblock %}
 _Reference:_ [std::bind](http://en.cppreference.com/w/cpp/utility/functional/bind)
 
